@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>simple alpinejs todo app</title>
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div
+      x-data="{ todos: getTodosFromLocalStorage(), userInput: '' }"
+      class="container"
+    >
+      <form
+        x-on:submit.prevent="if(userInput.trim().length) {
+    todos.push({name: userInput, completed: false }); userInput = '';
+    saveTodosToLocalStorage(todos);
+  }"
+      >
+        <input
+          x-model="userInput"
+          placeholder="Enter todo item"
+          type="text"
+          class="input"
+        />
+        <button>Add</button>
+      </form>
+      <template x-for="todo in todos">
+        <div>
+          <input type="checkbox" x-model="todo.completed" />
+          <span
+            x-text="todo.name"
+            :class="{'completed': todo.completed}"
+          ></span>
+          <button
+            @click="todos = todos.filter((currTodo) => currTodo !== todo); saveTodosToLocalStorage(todos)"
+            class="delete"
+          >
+            x
+          </button>
+        </div>
+      </template>
+      <button
+        @click="todos = []; saveTodosToLocalStorage(todos)"
+        x-show="todos.length"
+      >
+        Clear
+      </button>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
